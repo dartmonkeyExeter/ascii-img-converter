@@ -3,6 +3,11 @@ from PIL import Image, ImageOps
 from math import trunc
 import os
 from time import sleep
+import pygame.mixer
+
+pygame.mixer.init()
+pygame.mixer.music.load('C:/Users/aaron/Desktop/bad apple/music.mp3')
+pygame.mixer.music.set_volume(0.5)
 
 ascii_chars = [' ', '.', ':', '-', '=', '+', '*', '%', '@', '#']
 
@@ -29,17 +34,19 @@ def extract_frames(video_path, output_folder):
 # Example usage
 video_path = 'C:/Users/aaron/Desktop/bad apple/video.mp4'
 output_folder = 'C:/Users/aaron/Desktop/bad apple/frames'
-extract_frames(video_path, output_folder)
+# extract_frames(video_path, output_folder)
 
 files = os.listdir(output_folder)
+
+ascii_art_preload = []
 
 for file_name in files:
     file_path = os.path.join(output_folder, file_name)
     if os.path.isfile(file_path):
         with Image.open(file_path) as img:
             size = list(img.size)
-            size[0] = trunc(size[0] / 25)
-            size[1] = trunc(size[1] / 25)
+            size[0] = trunc(size[0] / 15)
+            size[1] = trunc(size[1] / 15)
             ImageOps.cover(img, tuple(size)).save("resized.jpg")
         im = Image.open("resized.jpg")
         im = ImageOps.autocontrast(im)
@@ -79,9 +86,11 @@ for file_name in files:
                 else:
                     row_output.append (" ")
             final_output.append(row_output)
+    ascii_art_preload.append(final_output)
 
 
-        for i in final_output:
-            print(" ".join(i))
-        sleep(0.016)
-# Your logic for processing each frame goes inside the loop
+pygame.mixer.music.play()
+for ascii_frame in ascii_art_preload:
+    for row in ascii_frame:
+        print(" ".join(row))
+    sleep(0.031)
